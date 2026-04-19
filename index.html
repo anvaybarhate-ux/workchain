@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WORKCHAIN | Smart Contract Freelancing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=jet-brains-mono@400,700&display=swap');
+
+        :root {
+            --paper: #F0EAD6;
+            --black: #1A1A1A;
+            --crimson: #DC143C;
+            --gold: #C5A945;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            background-color: var(--paper);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .grunge-bg {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3%3Ffilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .halftone {
+            background-image: radial-gradient(var(--black) 1px, transparent 0);
+            background-size: 6px 6px;
+        }
+
+        .torn-edge {
+            clip-path: polygon(0% 1%, 10% 0%, 20% 1%, 30% 0%, 40% 1%, 50% 0%, 60% 1%, 70% 0%, 80% 1%, 90% 0%, 100% 1%, 100% 99%, 90% 100%, 80% 99%, 70% 100%, 60% 99%, 50% 100%, 40% 99%, 30% 100%, 20% 99%, 10% 100%, 0% 99%);
+        }
+
+        @keyframes jitter {
+            0%, 100% { transform: translate(0,0) rotate(0deg); }
+            33% { transform: translate(-1px, -1px) rotate(-0.5deg); }
+            66% { transform: translate(1px, 0.5px) rotate(0.5deg); }
+        }
+
+        .animate-jitter { animation: jitter 0.5s infinite step-end; }
+        .animate-jitter-slow { animation: jitter 0.8s infinite step-end; }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.98; }
+        }
+
+        .animate-flicker { animation: flicker 0.15s infinite step-end; }
+
+        @keyframes glitch-text {
+            0%, 100% { text-shadow: 2px 2px 0 var(--crimson); }
+            50% { text-shadow: -1px -1px 0 var(--gold); }
+        }
+
+        .text-distressed {
+            animation: glitch-text 2s infinite step-end;
+            filter: contrast(110%);
+        }
+
+        .marquee {
+            white-space: nowrap;
+            animation: marquee 12s linear infinite;
+        }
+
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        .simple-card-shadow {
+            box-shadow: 8px 8px 0px var(--black);
+        }
+
+        .card-img-grunge {
+            filter: contrast(1.2) grayscale(0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen relative overflow-hidden bg-[#F0EAD6] text-[#1A1A1A]">
+        <!-- Global Noise Overlay -->
+        <div class="fixed inset-0 grunge-bg z-50 pointer-events-none"></div>
+
+        <!-- Header Navigation Bar -->
+        <header class="fixed top-0 w-full z-40 bg-[#DC143C] text-[#F0EAD6] h-12 flex items-center overflow-hidden border-b-4 border-[#1A1A1A]">
+            <div class="marquee flex items-center space-x-12 uppercase font-black text-xs tracking-[0.2em]">
+                <span>WORKCHAIN PROTOCOL ACTIVE</span>
+                <span>•</span>
+                <span>ESCROW SECURED [NODE: 0x9fA2]</span>
+                <span>•</span>
+                <span>PEER-TO-PEER SETTLEMENT</span>
+                <span>•</span>
+                <span>VERIFIED ON-CHAIN REPUTATION</span>
+                <span>•</span>
+                <span>SMART CONTRACTS ACTIVE</span>
+                <span>•</span>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="pt-12 relative">
+            <!-- Navigation Controls -->
+            <nav class="flex flex-wrap justify-between items-center px-8 py-10 relative z-10 gap-8">
+                <div class="flex items-start">
+                    <div class="flex flex-col">
+                        <a href="#" id="brand-logo-link" class="text-4xl font-black bg-[#1A1A1A] text-[#F0EAD6] px-4 py-1 border-4 border-[#DC143C] shadow-[-4px_4px_0_#C5A945]">
+                            WC.01X
+                        </a>
+                        <div class="mt-2 flex gap-2">
+                            <span class="text-[10px] bg-[#C5A945] text-[#1A1A1A] font-bold px-2 py-0.5">V.2.5</span>
+                            <span class="text-[10px] bg-[#1A1A1A] text-white font-bold px-2 py-0.5">MAINNET</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-xl relative">
+                    <div class="bg-[#F0EAD6] border-4 border-[#1A1A1A] flex items-center px-4 py-2 shadow-[4px_4px_0_#1A1A1A]">
+                        <iconify-icon icon="lucide:search" class="text-xl mr-3 opacity-60"></iconify-icon>
+                        <input type="text" placeholder="SEARCH FOR VERIFIED TALENT..." class="bg-transparent border-none outline-none w-full font-bold uppercase text-sm placeholder:text-[#1A1A1A]/30">
+                        <a href="#" id="search-btn-cta" class="bg-[#1A1A1A] text-[#F0EAD6] px-4 py-1 font-black uppercase text-xs hover:bg-[#DC143C] transition-all ml-2">FIND</a>
+                    </div>
+                </div>
+
+                <div class="flex space-x-6 items-center">
+                    <div class="hidden lg:flex space-x-6 font-black uppercase text-sm">
+                        <a href="#" id="nav-talent-link" class="hover:text-[#DC143C] transition-all">Hire</a>
+                        <a href="#" id="nav-work-link" class="hover:text-[#DC143C] transition-all">Work</a>
+                        <a href="#" id="nav-escrow-link" class="hover:text-[#DC143C] transition-all">Escrow</a>
+                    </div>
+                    <a href="#" id="cta-wallet-connect-link" class="bg-[#DC143C] text-white px-6 py-3 font-black uppercase text-lg border-4 border-[#1A1A1A] hover:bg-[#1A1A1A] transition-all shadow-[6px_6px_0_#1A1A1A] animate-jitter">
+                        CONNECT WALLET
+                    </a>
+                </div>
+            </nav>
+
+            <!-- Hero Section -->
+            <section class="relative px-8 pt-40 pb-32 md:pt-48 md:pb-40 overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                    <div class="lg:col-span-8 relative z-20">
+                        <div class="mb-4 flex gap-3">
+                            <span class="bg-[#DC143C] text-white px-3 py-1 text-xs font-black uppercase tracking-tighter border-2 border-[#1A1A1A]">
+                                ESCROW PROTECTED
+                            </span>
+                            <span class="bg-white text-[#1A1A1A] px-3 py-1 text-xs font-black uppercase tracking-tighter border-2 border-[#1A1A1A]">
+                                VERIFIED CONTRACTS
+                            </span>
+                        </div>
+                        <h2 class="text-[5rem] md:text-[10rem] font-black leading-[0.8] uppercase tracking-tighter text-distressed font-['Cabinet_Grotesk']">
+                            WORK<br/>
+                            <span class="text-[#DC143C]">CHAIN</span>
+                        </h2>
+                        <div class="mt-10 max-w-2xl bg-[#1A1A1A] text-[#F0EAD6] p-8 border-l-8 border-[#DC143C] rotate-[1.5deg] shadow-[10px_10px_0_#C5A945] animate-jitter-slow">
+                            <p class="text-2xl md:text-3xl font-black uppercase leading-tight">
+                                Peer-to-peer labor protocol. Secure payments via <span class="text-[#DC143C]">IMMUTABLE CODE</span>. Zero middleman fees.
+                            </p>
+                        </div>
+                        <div class="mt-12 flex flex-wrap gap-6">
+                            <a href="#" id="btn-post-project-link" class="bg-[#DC143C] text-[#F0EAD6] px-10 py-5 text-2xl font-black uppercase border-4 border-[#1A1A1A] shadow-[8px_8px_0_#1A1A1A] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all">
+                                POST PROJECT
+                            </a>
+                            <a href="#" id="btn-browse-gigs-link" class="bg-white text-[#1A1A1A] px-10 py-5 text-2xl font-black uppercase border-4 border-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F0EAD6] transition-all">
+                                BROWSE GIGS
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Visual Side -->
+                    <div class="lg:col-span-4 relative h-[500px] mt-16 lg:mt-0 flex items-center justify-center">
+                        <div class="w-full h-full bg-[#DC143C] torn-edge rotate-[3deg] relative overflow-hidden border-4 border-[#1A1A1A]">
+                            <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800" alt="Tech Abstract" class="w-full h-full object-cover mix-blend-multiply grayscale contrast-150 opacity-40">
+                            <div class="absolute inset-0 halftone opacity-20"></div>
+                        </div>
+                        <div class="absolute -bottom-8 -left-8 bg-[#C5A945] p-6 border-4 border-[#1A1A1A] shadow-[8px_8px_0_#1A1A1A] rotate-[-4deg] animate-jitter-slow">
+                            <iconify-icon icon="lucide:shield-check" class="text-6xl text-[#1A1A1A]"></iconify-icon>
+                            <p class="font-black text-xs mt-2 uppercase tracking-tighter">TRUST_SCORE: 100</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marketplace Filter Bar -->
+            <section class="bg-[#1A1A1A] py-6 px-8 border-y-4 border-white relative z-20">
+                <div class="flex flex-wrap gap-3 items-center">
+                    <span class="text-xs font-black text-white uppercase mr-4 opacity-50">Filter By:</span>
+                    <a href="#" id="filter-budget-link" class="bg-white text-[#1A1A1A] px-4 py-1.5 font-black uppercase text-[10px] border-2 border-[#1A1A1A] hover:bg-[#DC143C] hover:text-white transition-colors">Budget: 1k+</a>
+                    <a href="#" id="filter-verified-link" class="bg-white text-[#1A1A1A] px-4 py-1.5 font-black uppercase text-[10px] border-2 border-[#1A1A1A] hover:bg-[#DC143C] hover:text-white transition-colors">Verified <iconify-icon icon="lucide:check"></iconify-icon></a>
+                    <a href="#" id="filter-escrow-link" class="bg-[#C5A945] text-[#1A1A1A] px-4 py-1.5 font-black uppercase text-[10px] border-2 border-[#1A1A1A] hover:bg-white transition-colors">Smart Escrow Only</a>
+                    <div class="flex-1"></div>
+                    <div class="flex gap-4 items-center">
+                        <span class="text-[10px] font-black text-white/50 uppercase">Sort: High Reputation</span>
+                        <iconify-icon icon="lucide:sliders-horizontal" class="text-white"></iconify-icon>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Marketplace Section -->
+            <section class="py-32 bg-[#F0EAD6] text-[#1A1A1A] relative overflow-hidden">
+                <div class="px-8 relative z-10">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+                        <div>
+                            <h3 class="text-6xl font-black uppercase tracking-tighter">MARKETPLACE</h3>
+                            <div class="h-2 w-48 bg-[#DC143C] mt-1 shadow-[4px_4px_0_#C5A945]"></div>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <a href="#" id="cat-all-link" class="px-5 py-2 border-2 border-[#1A1A1A] uppercase text-xs font-black bg-[#1A1A1A] text-white">All</a>
+                            <a href="#" id="cat-design-link" class="px-5 py-2 border-2 border-[#1A1A1A] uppercase text-xs font-black hover:bg-[#DC143C] hover:text-white transition-colors">Design</a>
+                            <a href="#" id="cat-solidity-link" class="px-5 py-2 border-2 border-[#1A1A1A] uppercase text-xs font-black hover:bg-[#DC143C] hover:text-white transition-colors">Solidity</a>
+                            <a href="#" id="cat-audit-link" class="px-5 py-2 border-2 border-[#1A1A1A] uppercase text-xs font-black hover:bg-[#DC143C] hover:text-white transition-colors">Audit</a>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+                        <!-- Card Pattern 1 -->
+                        <div class="group relative transform hover:-translate-y-2 transition-all duration-300 simple-card-shadow">
+                            <div class="bg-[#F0EAD6] border-2 border-[#1A1A1A] torn-edge h-full flex flex-col">
+                                <div class="h-52 bg-black overflow-hidden relative border-b-2 border-[#1A1A1A]">
+                                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=400" alt="Gig" class="w-full h-full object-cover card-img-grunge group-hover:grayscale-0 transition-all">
+                                    <div class="absolute top-4 right-4 bg-[#DC143C] text-white text-[10px] font-black px-3 py-1 border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A]">TOP RATED</div>
+                                </div>
+                                <div class="p-8 flex-grow flex flex-col">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="text-[10px] font-black uppercase text-[#DC143C] tracking-widest border border-[#DC143C]/40 px-2 py-0.5">UI/UX DESIGN</span>
+                                        <span class="font-black text-3xl tracking-tighter">$2.4k</span>
+                                    </div>
+                                    <h4 class="text-2xl font-black uppercase leading-[1.1] mb-8">Web3 Protocol Interface Design</h4>
+                                    <div class="mt-auto pt-6 border-t-2 border-[#1A1A1A]/10 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-blue-500 border-2 border-[#1A1A1A] flex items-center justify-center">
+                                                <iconify-icon icon="lucide:user" class="text-white text-lg"></iconify-icon>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-[11px] font-black">AXEL_DEFI.ETH</span>
+                                                <span class="text-[9px] font-bold opacity-40 uppercase">98% SUCCESS</span>
+                                            </div>
+                                        </div>
+                                        <iconify-icon icon="lucide:check-circle" class="text-xl text-[#DC143C]"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Pattern 2 -->
+                        <div class="group relative transform hover:-translate-y-2 transition-all duration-300 simple-card-shadow">
+                            <div class="bg-[#F0EAD6] border-2 border-[#1A1A1A] torn-edge h-full flex flex-col">
+                                <div class="h-52 bg-black overflow-hidden relative border-b-2 border-[#1A1A1A]">
+                                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400" alt="Gig" class="w-full h-full object-cover card-img-grunge group-hover:grayscale-0 transition-all">
+                                    <div class="absolute top-4 right-4 bg-[#C5A945] text-[#1A1A1A] text-[10px] font-black px-3 py-1 border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A]">SECURE_AUDIT</div>
+                                </div>
+                                <div class="p-8 flex-grow flex flex-col">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="text-[10px] font-black uppercase text-[#DC143C] tracking-widest border border-[#DC143C]/40 px-2 py-0.5">SOLIDITY AUDIT</span>
+                                        <span class="font-black text-3xl tracking-tighter">1.5 ETH</span>
+                                    </div>
+                                    <h4 class="text-2xl font-black uppercase leading-[1.1] mb-8">Smart Contract Security Audit</h4>
+                                    <div class="mt-auto pt-6 border-t-2 border-[#1A1A1A]/10 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-gray-800 border-2 border-[#1A1A1A] flex items-center justify-center">
+                                                <iconify-icon icon="lucide:shield" class="text-white text-lg"></iconify-icon>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-[11px] font-black">SAFE_CODE.LABS</span>
+                                                <span class="text-[9px] font-bold opacity-40 uppercase">100+ AUDITS</span>
+                                            </div>
+                                        </div>
+                                        <iconify-icon icon="lucide:check-circle" class="text-xl text-[#DC143C]"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card Pattern 3 -->
+                        <div class="group relative transform hover:-translate-y-2 transition-all duration-300 simple-card-shadow">
+                            <div class="bg-[#F0EAD6] border-2 border-[#1A1A1A] torn-edge h-full flex flex-col">
+                                <div class="h-52 bg-black overflow-hidden relative border-b-2 border-[#1A1A1A]">
+                                    <img src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&q=80&w=400" alt="Gig" class="w-full h-full object-cover card-img-grunge group-hover:grayscale-0 transition-all">
+                                    <div class="absolute top-4 right-4 bg-[#DC143C] text-white text-[10px] font-black px-3 py-1 border-2 border-[#1A1A1A] shadow-[3px_3px_0_#1A1A1A]">VERIFIED</div>
+                                </div>
+                                <div class="p-8 flex-grow flex flex-col">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <span class="text-[10px] font-black uppercase text-[#DC143C] tracking-widest border border-[#DC143C]/40 px-2 py-0.5">GEN_ART</span>
+                                        <span class="font-black text-3xl tracking-tighter">$3.8k</span>
+                                    </div>
+                                    <h4 class="text-2xl font-black uppercase leading-[1.1] mb-8">Generative Art Collection Engine</h4>
+                                    <div class="mt-auto pt-6 border-t-2 border-[#1A1A1A]/10 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-10 h-10 bg-purple-600 border-2 border-[#1A1A1A] flex items-center justify-center">
+                                                <iconify-icon icon="lucide:palette" class="text-white text-lg"></iconify-icon>
+                                            </div>
+                                            <div class="flex flex-col">
+                                                <span class="text-[11px] font-black">VOID_ART.ETH</span>
+                                                <span class="text-[9px] font-bold opacity-40 uppercase">TOP 1% ARTIST</span>
+                                            </div>
+                                        </div>
+                                        <iconify-icon icon="lucide:check-circle" class="text-xl text-[#DC143C]"></iconify-icon>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Milestone Flow -->
+            <section class="py-32 bg-[#1A1A1A] text-white px-8 relative overflow-hidden">
+                <div class="max-w-6xl mx-auto relative z-10">
+                    <div class="text-center mb-20">
+                        <span class="text-[#DC143C] font-black uppercase text-xl mb-2 block tracking-widest animate-flicker">SYSTEM_LOG</span>
+                        <h2 class="text-6xl md:text-8xl font-black uppercase tracking-tighter">HOW IT WORKS</h2>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <!-- Step 1 -->
+                        <div class="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-[#DC143C] shadow-[8px_8px_0_#DC143C] rotate-[-1deg]">
+                            <span class="text-5xl font-black mb-4 block">01</span>
+                            <h5 class="text-xl font-black uppercase mb-2">Fund Escrow</h5>
+                            <p class="text-xs font-bold leading-relaxed">Client locks funds in smart contract. Transparent verification on-chain.</p>
+                        </div>
+                        <!-- Step 2 -->
+                        <div class="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-[#1A1A1A] shadow-[8px_8px_0_#C5A945] md:translate-y-6 rotate-[1deg]">
+                            <span class="text-5xl font-black mb-4 block">02</span>
+                            <h5 class="text-xl font-black uppercase mb-2">Work Phase</h5>
+                            <p class="text-xs font-bold leading-relaxed">Freelancer submits milestones. All data secured via decentralized protocols.</p>
+                        </div>
+                        <!-- Step 3 -->
+                        <div class="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-[#1A1A1A] shadow-[8px_8px_0_#DC143C] rotate-[-2deg]">
+                            <span class="text-5xl font-black mb-4 block">03</span>
+                            <h5 class="text-xl font-black uppercase mb-2">Validation</h5>
+                            <p class="text-xs font-bold leading-relaxed">Client approves deliverables. Contract triggers automatic payment release.</p>
+                        </div>
+                        <!-- Step 4 -->
+                        <div class="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-[#C5A945] shadow-[8px_8px_0_#1A1A1A] md:translate-y-6 rotate-[2deg]">
+                            <span class="text-5xl font-black mb-4 block">04</span>
+                            <h5 class="text-xl font-black uppercase mb-2">Settlement</h5>
+                            <p class="text-xs font-bold leading-relaxed">Instant payouts. No delays, no high commissions, no middlemen.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final CTA Section -->
+            <section class="py-40 bg-[#DC143C] relative overflow-hidden flex items-center justify-center border-t-8 border-[#1A1A1A]">
+                <div class="absolute inset-0 halftone opacity-10"></div>
+                <div class="relative z-10 text-center px-4">
+                    <h2 class="text-7xl md:text-9xl font-black text-[#F0EAD6] leading-none uppercase tracking-tighter text-distressed">
+                        JOIN THE<br/>REVOLUTION
+                    </h2>
+                    <div class="mt-12">
+                        <a href="#" id="final-cta-btn-link" class="bg-[#1A1A1A] text-[#F0EAD6] px-16 py-6 text-3xl font-black uppercase border-4 border-white hover:bg-white hover:text-[#1A1A1A] transition-all transform hover:scale-105 inline-block">
+                            ENTER APP
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Footer -->
+            <footer class="bg-[#1A1A1A] text-[#F0EAD6] py-20 px-8">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-12">
+                    <div class="flex flex-col">
+                        <div id="footer-brand-logo" class="text-4xl font-black bg-[#DC143C] p-3 border-2 border-white rotate-[-2deg] w-fit mb-6">WORKCHAIN</div>
+                        <p class="max-w-xs font-bold uppercase text-[10px] opacity-60 leading-tight tracking-widest">
+                            THE WORLD'S FIRST PEER-TO-PEER LABOR PROTOCOL SECURED BY MILESTONE-BASED SMART CONTRACTS.
+                        </p>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-16 font-black uppercase text-xs tracking-[0.2em]">
+                        <div class="flex flex-col space-y-4">
+                            <span class="text-[#DC143C] text-[10px]">RESOURCES</span>
+                            <a href="#" id="foot-docs-link" class="hover:text-[#DC143C] transition-colors">Docs</a>
+                            <a href="#" id="foot-git-link" class="hover:text-[#DC143C] transition-colors">Github</a>
+                            <a href="#" id="foot-dao-link" class="hover:text-[#DC143C] transition-colors">DAO</a>
+                        </div>
+                        <div class="flex flex-col space-y-4">
+                            <span class="text-[#C5A945] text-[10px]">SOCIALS</span>
+                            <a href="#" id="foot-x-link" class="hover:text-[#DC143C] transition-colors">Twitter</a>
+                            <a href="#" id="foot-dis-link" class="hover:text-[#DC143C] transition-colors">Discord</a>
+                            <a href="#" id="foot-tg-link" class="hover:text-[#DC143C] transition-colors">Telegram</a>
+                        </div>
+                        <div class="flex flex-col space-y-2 opacity-20 font-mono text-[8px] hidden lg:flex">
+                            <span>NODE: 8812-XA</span>
+                            <span>STATUS: LIVE</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-20 text-center border-t border-white/5 pt-10">
+                    <p class="text-[8px] font-mono opacity-20 uppercase tracking-[0.5em]">COPYRIGHT © 2024 WORKCHAIN PROTOCOL. PEER-TO-PEER LABOUR SYSTEMS INC.</p>
+                </div>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
