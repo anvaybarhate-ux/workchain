@@ -16,6 +16,15 @@
     color: var(--black);
     font-family: 'JetBrains Mono', monospace;
   }
+
+  /* Utility font overrides */
+  .font-sans {
+    font-family: 'Cabinet Grotesk', 'JetBrains Mono', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
 }
 
 @layer components {

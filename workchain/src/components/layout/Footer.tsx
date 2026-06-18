@@ -18,7 +18,7 @@ export function Footer() {
             <span className="text-[#DC143C] text-[10px]">RESOURCES</span>
             <Link href="/docs" className="hover:text-[#DC143C] transition-colors">Docs</Link>
             <Link href="https://github.com" className="hover:text-[#DC143C] transition-colors">Github</Link>
-            <Link href="/about" className="hover:text-[#DC143C] transition-colors">DAO</Link>
+            <Link href="/dao" className="hover:text-[#DC143C] transition-colors">DAO</Link>
           </div>
           <div className="flex flex-col space-y-4">
             <span className="text-[#C5A945] text-[10px]">SOCIALS</span>

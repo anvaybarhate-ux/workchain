@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { Marquee, Navbar, Footer } from "@/components/layout";
+import { WalletProvider } from "@/context/WalletContext";
+import WrongNetworkBanner from "@/components/WrongNetworkBanner";
+import ErrorToast from "@/components/ErrorToast";
 
 export const metadata: Metadata = {
   title: "WORKCHAIN | Smart Contract Freelancing",
@@ -13,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="h-full antialiased font-mono">
+    <html lang="en" className="h-full antialiased font-mono" suppressHydrationWarning>
       <head>
         <link
           href="https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@800,900&f[]=jet-brains-mono@400,700&display=swap"
@@ -24,13 +27,18 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-mono">
         {/* Global Noise Overlay */}
         <div className="fixed inset-0 grunge-bg z-[100] pointer-events-none mix-blend-overlay"></div>
-        <Marquee />
-        <main className="pt-12 relative flex-grow flex flex-col">
-          <Navbar />
-          {children}
-        </main>
-        <Footer />
+        <WalletProvider>
+          <WrongNetworkBanner />
+          <Marquee />
+          <main className="pt-12 relative flex-grow flex flex-col">
+            <Navbar />
+            {children}
+          </main>
+          <Footer />
+          <ErrorToast />
+        </WalletProvider>
       </body>
     </html>
   );
 }
+

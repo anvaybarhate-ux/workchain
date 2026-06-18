@@ -1,5 +1,8 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import ProtocolStats from '@/components/ProtocolStats';
 
 export default function Home() {
   return (
@@ -51,22 +54,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section / Feature Overview */}
-      <section className="bg-[#1A1A1A] text-[#F0EAD6] py-16 px-8 border-y-4 border-white relative z-20">
-        <div className="max-w-7xl mx-auto flex flex-wrap justify-around items-center gap-8">
-            <div className="text-center font-sans tracking-tighter">
-                <p className="text-5xl md:text-7xl font-black text-[#DC143C]">$12.4M</p>
-                <p className="text-sm font-bold uppercase tracking-widest mt-2">TOTAL VALUE LOCKED</p>
-            </div>
-            <div className="text-center font-sans tracking-tighter">
-                <p className="text-5xl md:text-7xl font-black text-[#C5A945]">8,402</p>
-                <p className="text-sm font-bold uppercase tracking-widest mt-2">ACTIVE PROJECTS</p>
-            </div>
-            <div className="text-center font-sans tracking-tighter">
-                <p className="text-5xl md:text-7xl font-black">0.05%</p>
-                <p className="text-sm font-bold uppercase tracking-widest mt-2">DISPUTE RATE</p>
-            </div>
-        </div>
-      </section>
+      <ProtocolStats />
 
       {/* Milestone Flow (How it works) */}
       <section className="py-32 bg-[#1A1A1A] text-white px-8 relative overflow-hidden">
@@ -96,7 +84,7 @@ export default function Home() {
               <p className="text-xs font-bold leading-relaxed">Client approves deliverables. Contract triggers automatic payment release.</p>
             </div>
             {/* Step 4 */}
-            <div className="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-[#C5A945] shadow-[8px_8px_0_#1A1A1A] md:translate-y-6 rotate-[2deg]">
+            <div className="bg-[#F0EAD6] text-[#1A1A1A] p-8 border-4 border-white shadow-[8px_8px_0_#1A1A1A] md:translate-y-6 rotate-[2deg]">
               <span className="text-5xl font-black mb-4 block font-sans">04</span>
               <h5 className="text-xl font-black uppercase mb-2 font-sans">Settlement</h5>
               <p className="text-xs font-bold leading-relaxed">Instant payouts. No delays, no high commissions, no middlemen.</p>

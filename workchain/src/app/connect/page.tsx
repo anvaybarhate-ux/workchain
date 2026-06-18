@@ -1,28 +1,93 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { useWallet } from '@/context/WalletContext';
 
 export default function ConnectPage() {
   const router = useRouter();
+  const {
+    address,
+    isConnected,
+    isConnecting,
+    isInitializing,
+    isCorrectNetwork,
+    shortAddress,
+    connectWallet,
+    switchToSepolia,
+    changeRole,
+    role
+  } = useWallet();
+
   const [step, setStep] = useState<1 | 2>(1);
-  const [isWalletConnecting, setIsWalletConnecting] = useState<string | null>(null);
-  const [walletConnected, setWalletConnected] = useState(false);
+  const [metaMaskError, setMetaMaskError] = useState(false);
   const [showWeb3Helper, setShowWeb3Helper] = useState(false);
   const [selectedRole, setSelectedRole] = useState<'freelancer' | 'client' | null>(null);
 
-  const handleWalletConnect = (walletApp: string) => {
-    setIsWalletConnecting(walletApp);
-    setTimeout(() => {
-      setIsWalletConnecting(null);
-      setWalletConnected(true);
+  // Auto-redirect if already connected and role selected
+  useEffect(() => {
+    if (!isInitializing && isConnected && role) {
+      router.push('/dashboard');
+    }
+  }, [isInitializing, isConnected, role, router]);
+
+  // Sync step with wallet connection state
+  useEffect(() => {
+    if (isConnected) {
       setStep(2);
-    }, 1500);
+    } else {
+      setStep(1);
+    }
+  }, [isConnected]);
+
+  // Sync selectedRole with context role or pre-select from localStorage
+  useEffect(() => {
+    if (role) {
+      setSelectedRole(role);
+    } else {
+      const storedRole = localStorage.getItem("workchain_role") as 'freelancer' | 'client' | null;
+      if (storedRole) {
+        setSelectedRole(storedRole);
+      }
+    }
+  }, [role]);
+
+  const handleMetaMaskConnect = async () => {
+    if (typeof window === "undefined" || !window.ethereum) {
+      setMetaMaskError(true);
+      return;
+    }
+    setMetaMaskError(false);
+    await connectWallet();
   };
 
-  const handleInitialize = () => {
+  // STATE 0 — Initializing session
+  if (isInitializing) {
+    return (
+      <div className="bg-[#F0EAD6] min-h-[90vh] pb-32 pt-20 px-4 relative flex flex-col items-center justify-center z-10 font-sans">
+        <div className="absolute inset-0 halftone opacity-10 pointer-events-none -z-10"></div>
+        <div className="bg-[#1A1A1A] text-[#F0EAD6] p-12 border-4 border-[#DC143C] shadow-[12px_12px_0_#C5A945] rotate-[-1deg] text-center max-w-lg mx-auto relative z-10 w-full flex flex-col items-center justify-center">
+          <span className="text-[#DC143C] font-mono font-black text-xs uppercase tracking-widest block mb-4 animate-flicker">
+            INITIALIZING
+          </span>
+          <div className="w-16 h-16 border-4 border-[#DC143C] border-t-transparent rounded-full animate-spin mb-4"></div>
+          <p className="font-mono text-xs font-bold text-[#F0EAD6]/60 uppercase tracking-wide leading-relaxed">
+            CHECKING WALLET CONNECTION...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleRoleSelect = async (roleVal: 'freelancer' | 'client') => {
+    setSelectedRole(roleVal);
+    await changeRole(roleVal);
+  };
+
+  const handleInitialize = async () => {
     if (!selectedRole) return;
+    await changeRole(selectedRole);
     router.push('/dashboard');
   };
 
@@ -65,34 +130,50 @@ export default function ConnectPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-10">
                 {/* MetaMask */}
-                <button 
-                  onClick={() => handleWalletConnect('metamask')}
-                  disabled={isWalletConnecting !== null}
-                  className="bg-[#F0EAD6] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0_#C5A945] p-8 flex flex-col items-center justify-center hover:border-[#DC143C] hover:shadow-[8px_8px_0_#DC143C] transition-all relative group overflow-hidden"
-                >
-                  {isWalletConnecting === 'metamask' && (
-                    <div className="absolute inset-0 bg-[#DC143C] flex items-center justify-center z-20">
-                      <span className="font-mono font-black text-white text-xl animate-jitter">CONNECTING...</span>
-                    </div>
+                <div className="flex flex-col gap-2">
+                  <button 
+                    onClick={handleMetaMaskConnect}
+                    disabled={isConnecting}
+                    className={`w-full bg-[#F0EAD6] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0_#C5A945] p-8 flex flex-col items-center justify-center hover:border-[#DC143C] hover:shadow-[8px_8px_0_#DC143C] transition-all relative group overflow-hidden ${
+                      isConnecting ? 'animate-pulse border-[#DC143C]' : ''
+                    }`}
+                  >
+                    {isConnecting && (
+                      <div className="absolute inset-0 bg-[#DC143C] flex items-center justify-center z-20">
+                        <span className="font-mono font-black text-white text-xl animate-jitter">CONNECTING...</span>
+                      </div>
+                    )}
+                    <span className="absolute top-2 right-2 bg-[#C5A945] text-[#1A1A1A] text-[9px] font-black px-2 py-0.5 border-2 border-[#1A1A1A]">MOST POPULAR</span>
+                    <span className="text-[4rem] group-hover:scale-110 transition-transform">🦊</span>
+                    <span className="font-black text-xl md:text-2xl mt-4 tracking-tighter">METAMASK</span>
+                  </button>
+                  {metaMaskError && (
+                    <span className="font-mono text-xs text-[#DC143C] font-black uppercase text-center mt-2 leading-normal">
+                      METAMASK NOT INSTALLED —{" "}
+                      <a 
+                        href="https://metamask.io" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="underline font-black hover:text-[#DC143C]"
+                      >
+                        INSTALL HERE ↗
+                      </a>
+                    </span>
                   )}
-                  <span className="absolute top-2 right-2 bg-[#C5A945] text-[#1A1A1A] text-[9px] font-black px-2 py-0.5 border-2 border-[#1A1A1A]">MOST POPULAR</span>
-                  <span className="text-[4rem] group-hover:scale-110 transition-transform">🦊</span>
-                  <span className="font-black text-xl md:text-2xl mt-4 tracking-tighter">METAMASK</span>
-                </button>
+                  {isConnected && !isCorrectNetwork && (
+                    <span className="font-mono text-xs text-[#C5A945] font-black uppercase text-center mt-2 animate-pulse">
+                      CONNECTED BUT WRONG NETWORK — SWITCHING...
+                    </span>
+                  )}
+                </div>
 
                 {/* WalletConnect */}
                 <button 
-                  onClick={() => handleWalletConnect('walletconnect')}
-                  disabled={isWalletConnecting !== null}
-                  className="bg-[#F0EAD6] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0_#C5A945] p-8 flex flex-col items-center justify-center hover:border-[#C5A945] hover:shadow-[8px_8px_0_#C5A945] transition-all relative group overflow-hidden"
+                  disabled={true}
+                  className="bg-[#F0EAD6] text-[#1A1A1A] border-4 border-[#1A1A1A] shadow-[8px_8px_0_#C5A945] p-8 flex flex-col items-center justify-center opacity-50 cursor-not-allowed transition-all relative group overflow-hidden"
                 >
-                  {isWalletConnecting === 'walletconnect' && (
-                    <div className="absolute inset-0 bg-[#C5A945] flex items-center justify-center z-20">
-                      <span className="font-mono font-black text-[#1A1A1A] text-xl animate-jitter">CONNECTING...</span>
-                    </div>
-                  )}
-                  <span className="absolute top-2 right-2 bg-[#1A1A1A] text-white text-[9px] font-black px-2 py-0.5 border-2 border-[#1A1A1A]">MOBILE FRIENDLY</span>
-                  <span className="text-[4rem] group-hover:scale-110 transition-transform block rotate-45 transform">🔗</span>
+                  <span className="absolute top-2 right-2 bg-[#1A1A1A] text-white text-[9px] font-black px-2 py-0.5 border-2 border-[#1A1A1A]">COMING SOON</span>
+                  <span className="text-[4rem] block rotate-45 transform">🔗</span>
                   <span className="font-black text-xl md:text-2xl mt-4 tracking-tighter">WALLETCONNECT</span>
                 </button>
               </div>
@@ -137,7 +218,7 @@ export default function ConnectPage() {
             >
               <div className="text-center">
                 <div className="inline-block bg-[#1A1A1A] text-[#10B981] px-4 py-2 border-4 border-[#1A1A1A] font-mono font-black text-xs shadow-[6px_6px_0_#1A1A1A] mb-8 rotate-[-1deg] animate-flicker">
-                  ✓ CONNECTED: 0x8F9...A42B
+                  ✓ CONNECTED: {shortAddress || address}
                 </div>
                 <h2 className="text-5xl md:text-7xl font-black uppercase tracking-tighter text-[#1A1A1A]">
                   I AM A...
@@ -147,7 +228,7 @@ export default function ConnectPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 {/* FREELANCER CARD */}
                 <button 
-                  onClick={() => setSelectedRole('freelancer')}
+                  onClick={() => handleRoleSelect('freelancer')}
                   className={`bg-[#F0EAD6] p-10 flex flex-col border-4 transition-all ${
                     selectedRole === 'freelancer' 
                       ? 'border-[#DC143C] shadow-[12px_12px_0_#C5A945] rotate-0 scale-[1.02] bg-white' 
@@ -165,7 +246,7 @@ export default function ConnectPage() {
 
                 {/* CLIENT CARD */}
                 <button 
-                  onClick={() => setSelectedRole('client')}
+                  onClick={() => handleRoleSelect('client')}
                   className={`bg-[#F0EAD6] p-10 flex flex-col border-4 transition-all ${
                     selectedRole === 'client' 
                       ? 'border-[#C5A945] shadow-[12px_12px_0_#DC143C] rotate-0 scale-[1.02] bg-white' 
@@ -207,3 +288,4 @@ export default function ConnectPage() {
     </div>
   );
 }
+

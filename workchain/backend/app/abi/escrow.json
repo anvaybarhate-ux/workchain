@@ -1,0 +1,1000 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "EnforcedPause",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ExpectedPause",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "ReentrancyGuardReentrantCall",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "raisedBy",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "votingDeadline",
+        "type": "uint256"
+      }
+    ],
+    "name": "DisputeRaised",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountReleased",
+        "type": "uint256"
+      }
+    ],
+    "name": "DisputeResolved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "from",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsDeposited",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "FundsReleased",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "MilestoneActivated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amountReleased",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "freelancer",
+        "type": "address"
+      }
+    ],
+    "name": "MilestoneApproved",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "client",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "feedback",
+        "type": "string"
+      }
+    ],
+    "name": "MilestoneRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "ipfsHash",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "freelancer",
+        "type": "address"
+      }
+    ],
+    "name": "MilestoneSubmitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "cancelledBy",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "refunded",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProjectCancelled",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "freelancer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalPaid",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProjectCompleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "client",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "freelancer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalValue",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "milestoneCount",
+        "type": "uint256"
+      }
+    ],
+    "name": "ProjectInitialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "voter",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "votedForFreelancer",
+        "type": "bool"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "votesFreelancer",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "votesClient",
+        "type": "uint256"
+      }
+    ],
+    "name": "VoteCast",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "activeMilestoneIndex",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      }
+    ],
+    "name": "approveMilestone",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "cancelProject",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "voteForFreelancer",
+        "type": "bool"
+      }
+    ],
+    "name": "castVote",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "client",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "currentDispute",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "raisedBy",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "freelancerEvidence",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "clientEvidence",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votesFreelancer",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votesClient",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "votingDeadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "resolved",
+        "type": "bool"
+      },
+      {
+        "internalType": "address",
+        "name": "winner",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "disputeActive",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "freelancer",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getDispute",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "milestoneIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "raisedBy",
+            "type": "address"
+          },
+          {
+            "internalType": "string",
+            "name": "freelancerEvidence",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "clientEvidence",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votesFreelancer",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votesClient",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "votingDeadline",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "resolved",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "winner",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct IWorkchainEscrow.DisputeData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getEscrowBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMilestone",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "title",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deadline",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum IWorkchainEscrow.MilestoneStatus",
+            "name": "status",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "ipfsHash",
+            "type": "string"
+          },
+          {
+            "internalType": "string[]",
+            "name": "proofLinks",
+            "type": "string[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "submittedAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "approvedAt",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IWorkchainEscrow.Milestone",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getMilestoneCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getProject",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "_client",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_freelancer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_factory",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalValue",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isInitialized",
+        "type": "bool"
+      },
+      {
+        "internalType": "bool",
+        "name": "_disputeActive",
+        "type": "bool"
+      },
+      {
+        "internalType": "enum IWorkchainEscrow.ProjectStatus",
+        "name": "_status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_activeMilestoneIndex",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "hasVoted",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_client",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_freelancer",
+        "type": "address"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_titles",
+        "type": "string[]"
+      },
+      {
+        "internalType": "string[]",
+        "name": "_descriptions",
+        "type": "string[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_amounts",
+        "type": "uint256[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_deadlines",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isInitialized",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "milestones",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "title",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "deadline",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum IWorkchainEscrow.MilestoneStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "internalType": "string",
+        "name": "ipfsHash",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "submittedAt",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "approvedAt",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "evidenceIpfsHash",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "statement",
+        "type": "string"
+      }
+    ],
+    "name": "raiseDispute",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "feedback",
+        "type": "string"
+      }
+    ],
+    "name": "rejectMilestone",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "resolveDispute",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "status",
+    "outputs": [
+      {
+        "internalType": "enum IWorkchainEscrow.ProjectStatus",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "evidenceIpfsHash",
+        "type": "string"
+      }
+    ],
+    "name": "submitEvidence",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "milestoneIndex",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "ipfsHash",
+        "type": "string"
+      },
+      {
+        "internalType": "string[]",
+        "name": "proofLinks",
+        "type": "string[]"
+      }
+    ],
+    "name": "submitMilestone",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalValue",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

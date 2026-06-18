@@ -1,0 +1,22 @@
+{
+  "name": "workchain-contracts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "test:gas": "REPORT_GAS=true hardhat test",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "verify": "hardhat run scripts/verify.ts --network sepolia",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "hh2",
+    "@openzeppelin/contracts": "^5.0.2",
+    "hardhat": "^2.22.3",
+    "dotenv": "^16.4.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.0.0"
+  }
+}
