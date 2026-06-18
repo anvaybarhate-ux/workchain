@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: workchain-api
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: workchain-db
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: CORS_ORIGINS
+        value: "https://your-vercel-domain.vercel.app" # REPLACE THIS LATER
+      - key: WEB3_RPC_URL
+        sync: false
+      - key: PINATA_JWT
+        sync: false
+      - key: PINATA_GATEWAY
+        sync: false
+      - key: CONTRACT_FACTORY
+        sync: false
+      - key: CONTRACT_REPUTATION
+        sync: false
+      - key: PRIVATE_KEY
+        sync: false
+
+databases:
+  - name: workchain-db
+    databaseName: workchain
+    user: workchain

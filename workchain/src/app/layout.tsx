@@ -1,13 +1,26 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Marquee, Navbar, Footer } from "@/components/layout";
 import { WalletProvider } from "@/context/WalletContext";
 import WrongNetworkBanner from "@/components/WrongNetworkBanner";
 import ErrorToast from "@/components/ErrorToast";
 
+export const viewport: Viewport = {
+  themeColor: "#DC143C",
+};
+
 export const metadata: Metadata = {
   title: "WORKCHAIN | Smart Contract Freelancing",
   description: "Peer-to-peer labor protocol. Secure payments via immutable code.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Workchain",
+  },
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export default function RootLayout({
