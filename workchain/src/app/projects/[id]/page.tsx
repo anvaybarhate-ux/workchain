@@ -195,12 +195,21 @@ export default function ProjectDetail() {
             m.status?.toLowerCase() === 'submitted' || 
             m.status?.toLowerCase() === 'disputed'
           );
+          const allPending = (projData.milestones || []).every((m: any) =>
+            m.status?.toLowerCase() === 'pending'
+          );
           if (activeIdx === -1) {
             const allCompleted = (projData.milestones || []).every((m: any) => 
               m.status?.toLowerCase() === 'complete' || m.status?.toLowerCase() === 'released'
             );
             activeIdx = allCompleted ? (projData.milestones || []).length : 0;
-          } 
+          }
+
+          // If all milestones are pending (freshly created), force index 0 to ACTIVE
+          // so the freelancer sees the submit form
+          if (allPending && list.length > 0) {
+            list[0].status = 1; // ACTIVE
+          }
 
           // Build a dummy tuple matching contract state layout:
           // [client, freelancer, arbiter, totalBudget, currentMilestoneIndex, state, balance]
@@ -221,7 +230,8 @@ export default function ProjectDetail() {
           setEscrowBalance(BigInt(Math.round(remainingVal * 1e18)));
         }
       } else {
-        // Undeployed project milestones fallback from DB
+        // No contract_address in DB yet — treat as active project in mock mode
+        // First milestone is ACTIVE so the freelancer can submit deliverables
         setIsMock(true);
         const list = (projData.milestones || []).map((m: any, idx: number) => ({
           index: idx,
@@ -231,10 +241,15 @@ export default function ProjectDetail() {
           deadline: m.deadline && !isNaN(new Date(m.deadline).getTime()) 
             ? BigInt(Math.floor(new Date(m.deadline).getTime() / 1000))
             : BigInt(0),
-          status: 0, // Pending
+          // First milestone is ACTIVE (1) by default so submit form renders
+          status: idx === 0 ? 1 : 0,
           id: m.id
         }));
         setMilestones(list);
+        // Set mock on-chain state so getActiveMilestone() works correctly
+        const mockState = new Array(10).fill(null);
+        mockState[7] = 0; // currentMilestoneIndex = 0
+        setOnChainState(mockState);
       }
 
     } catch (err) {
