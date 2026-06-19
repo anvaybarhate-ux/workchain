@@ -18,6 +18,9 @@ class ProjectCreate(BaseModel):
     description: Optional[str] = None
     category: ProjectCategory
     milestones: List[MilestoneCreate]
+    contract_address: Optional[str] = Field(None, description="Deployed escrow contract address")
+    total_value_eth: Optional[Decimal] = Field(None, description="Total ETH locked in escrow")
+    tx_hash_deploy: Optional[str] = Field(None, description="Factory createProject tx hash")
 
 class ProjectUpdate(BaseModel):
     contract_address: Optional[str] = Field(None, description="Escrow contract address")

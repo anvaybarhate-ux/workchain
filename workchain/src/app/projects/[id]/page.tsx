@@ -86,6 +86,8 @@ export default function ProjectDetail() {
       setIsError(false);
       // 1. Fetch Off-chain Project Details from backend API
       const projData = await getProject(id);
+      console.log("PROJECT DATA:", projData);
+      console.log("CONTRACT ADDRESS:", projData?.contract_address);
       setProject(projData);
 
       // 2. Fetch On-chain Escrow State if contract exists

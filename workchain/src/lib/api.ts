@@ -102,6 +102,14 @@ export const updateProjectStatus = (
   body: JSON.stringify({ status })
 })
 
+export const updateProject = (
+  id: string,
+  data: Record<string, unknown>
+) => apiFetch<any>(`/api/projects/${id}`, {
+  method: "PUT",
+  body: JSON.stringify(data)
+})
+
 // ── MILESTONES ─────────────────────
 export const getMilestone = (
   id: string

@@ -7,7 +7,7 @@ from app.models.user import User
 from app.models.project import Project, ProjectStatus
 from app.models.milestone import Milestone, MilestoneStatus
 from app.models.dispute import Dispute, DisputeStatus
-from app.schemas.project import ProjectCreate, ProjectResponse, ProjectStatusUpdate
+from app.schemas.project import ProjectCreate, ProjectResponse, ProjectStatusUpdate, ProjectUpdate
 from app.utils.wallet import is_valid_eth_address, to_checksum
 
 router = APIRouter(prefix="/projects", tags=["Projects"])
@@ -79,7 +79,15 @@ def create_project(
         raise HTTPException(status_code=400, detail="Freelancer wallet is not registered in Workchain")
         
     # Create project record
-    total_val = sum(m.amount_eth for m in project_in.milestones)
+    total_val = project_in.total_value_eth if project_in.total_value_eth is not None \
+        else sum(m.amount_eth for m in project_in.milestones)
+    
+    # Validate contract_address if provided
+    checksum_contract = None
+    if project_in.contract_address:
+        if not is_valid_eth_address(project_in.contract_address):
+            raise HTTPException(status_code=400, detail="Invalid contract address format")
+        checksum_contract = to_checksum(project_in.contract_address)
     
     project = Project(
         title=project_in.title,
@@ -89,7 +97,8 @@ def create_project(
         total_value_eth=total_val,
         category=project_in.category,
         status=ProjectStatus.PENDING,
-        tx_hash_deploy=tx_hash_deploy
+        tx_hash_deploy=project_in.tx_hash_deploy or tx_hash_deploy,
+        contract_address=checksum_contract,
     )
     
     db.add(project)
@@ -112,6 +121,35 @@ def create_project(
     db.commit()
     db.refresh(project)
     
+    return project
+
+@router.put("/{project_id}", response_model=ProjectResponse)
+def update_project(
+    project_id: UUID,
+    project_in: ProjectUpdate,
+    db: Session = Depends(get_db)
+):
+    """
+    Partially updates a project record.
+    Primarily used for backfilling contract_address after on-chain deployment.
+    """
+    project = db.query(Project).filter(Project.id == project_id).first()
+    if not project:
+        raise HTTPException(status_code=404, detail="Project not found")
+    
+    update_data = project_in.model_dump(exclude_unset=True)
+    
+    # Validate and checksum contract address if being updated
+    if "contract_address" in update_data and update_data["contract_address"]:
+        if not is_valid_eth_address(update_data["contract_address"]):
+            raise HTTPException(status_code=400, detail="Invalid contract address format")
+        update_data["contract_address"] = to_checksum(update_data["contract_address"])
+    
+    for field, value in update_data.items():
+        setattr(project, field, value)
+    
+    db.commit()
+    db.refresh(project)
     return project
 
 @router.get("/{project_id}", response_model=ProjectResponse)

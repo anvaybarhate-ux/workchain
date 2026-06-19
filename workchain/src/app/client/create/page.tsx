@@ -254,22 +254,56 @@ export default function CreateProjectForm() {
       const receipt = await tx.wait();
 
       let escrowAddress: string | null = null;
+      console.log("[WorkchainFactory] Receipt logs count:", receipt.logs.length);
       try {
         const factoryInterface = factory.interface;
         for (const log of receipt.logs) {
           try {
-            const parsed = factoryInterface.parseLog(log);
+            const parsed = factoryInterface.parseLog({
+              topics: log.topics as string[],
+              data: log.data
+            });
+            console.log("[WorkchainFactory] Parsed log:", parsed?.name, parsed?.args);
             if (parsed?.name === "ProjectCreated") {
-              escrowAddress = parsed.args[0];
+              // escrowContract is indexed arg[0] — accessible by name or index
+              escrowAddress = parsed.args.escrowContract ?? parsed.args[0] ?? null;
+              console.log("[WorkchainFactory] FOUND escrow address via parseLog:", escrowAddress);
               break;
             }
-          } catch {
+          } catch (parseErr) {
+            console.log("[WorkchainFactory] Failed to parse log (skipping):", parseErr);
             continue;
           }
         }
-      } catch {
-        // escrowAddress stays null, not critical
+        // Fallback: if parseLog failed for every log, try decoding topic[1] directly
+        // ProjectCreated topics: [0]=sig, [1]=escrowContract, [2]=client, [3]=freelancer
+        if (!escrowAddress) {
+          for (const log of receipt.logs) {
+            if (log.topics && log.topics.length >= 2) {
+              try {
+                const topic1 = log.topics[1];
+                // Topics are 32-byte hex; address is the last 20 bytes (40 hex chars)
+                const potentialAddr = "0x" + topic1.slice(-40);
+                if (ethers.isAddress(potentialAddr) && potentialAddr !== ethers.ZeroAddress) {
+                  // Verify this is the ProjectCreated event by matching its selector
+                  const sig = factory.interface.getEvent("ProjectCreated")?.topicHash;
+                  if (sig && log.topics[0].toLowerCase() === sig.toLowerCase()) {
+                    escrowAddress = ethers.getAddress(potentialAddr);
+                    console.log("[WorkchainFactory] FOUND escrow address via topic decode:", escrowAddress);
+                    break;
+                  }
+                }
+              } catch (topicErr) {
+                console.log("[WorkchainFactory] Topic decode error:", topicErr);
+              }
+            }
+          }
+        }
+      } catch (outerErr) {
+        console.error("[WorkchainFactory] Outer log parse error:", outerErr);
+        // escrowAddress stays null
       }
+      console.log("[WorkchainFactory] Final escrow address:", escrowAddress);
 
       // Pre-register user profiles in the off-chain DB to satisfy constraints
       try {
@@ -280,7 +314,7 @@ export default function CreateProjectForm() {
       } catch { /* ignore */ }
 
       // Save project records to database
-      await createProject(address, {
+      const savedProject = await createProject(address, {
         title: projectName,
         description: projectDescription || "No specifications provided.",
         freelancer_wallet: freelancerAddress,
@@ -296,6 +330,7 @@ export default function CreateProjectForm() {
           milestone_index: i
         }))
       });
+      console.log("[Workchain] Project saved to DB:", savedProject?.id, "contract_address:", savedProject?.contract_address);
 
       // STAGE 4 — SUCCESS
       setLoadingStage(4);
