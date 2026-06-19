@@ -230,26 +230,61 @@ export default function ProjectDetail() {
           setEscrowBalance(BigInt(Math.round(remainingVal * 1e18)));
         }
       } else {
-        // No contract_address in DB yet — treat as active project in mock mode
-        // First milestone is ACTIVE so the freelancer can submit deliverables
+        // No contract_address in DB — build milestone list from DB statuses
         setIsMock(true);
+
+        // Helper: convert DB status string → on-chain status int
+        const dbStatusToInt = (statusStr: string, idx: number, allPending: boolean): number => {
+          const s = statusStr?.toLowerCase();
+          if (s === 'submitted') return 2;
+          if (s === 'released' || s === 'complete') return 3;
+          if (s === 'disputed') return 4;
+          if (s === 'active') return 1;
+          // 'pending' — only make index 0 ACTIVE if every milestone is pending (fresh project)
+          if (s === 'pending' && idx === 0 && allPending) return 1;
+          return 0; // PENDING
+        };
+
+        const allPending = (projData.milestones || []).every(
+          (m: any) => m.status?.toLowerCase() === 'pending'
+        );
+
         const list = (projData.milestones || []).map((m: any, idx: number) => ({
           index: idx,
           title: m.title,
           description: m.description,
           amount: BigInt(Math.round(parseFloat(m.amount_eth) * 1e18)),
-          deadline: m.deadline && !isNaN(new Date(m.deadline).getTime()) 
+          deadline: m.deadline && !isNaN(new Date(m.deadline).getTime())
             ? BigInt(Math.floor(new Date(m.deadline).getTime() / 1000))
             : BigInt(0),
-          // First milestone is ACTIVE (1) by default so submit form renders
-          status: idx === 0 ? 1 : 0,
-          id: m.id
+          status: dbStatusToInt(m.status, idx, allPending),
+          id: m.id,
+          ipfsHash: m.ipfs_hash || '',
+          proofLinks: m.proof_links || []
         }));
         setMilestones(list);
+
+        // Find the current active milestone index (first non-completed)
+        let activeIdx = (projData.milestones || []).findIndex((m: any) =>
+          ['active', 'submitted', 'disputed'].includes(m.status?.toLowerCase())
+        );
+        if (activeIdx === -1) {
+          const allDone = (projData.milestones || []).every((m: any) =>
+            ['complete', 'released'].includes(m.status?.toLowerCase())
+          );
+          activeIdx = allDone ? (projData.milestones || []).length : 0;
+        }
+
         // Set mock on-chain state so getActiveMilestone() works correctly
         const mockState = new Array(10).fill(null);
-        mockState[7] = 0; // currentMilestoneIndex = 0
+        mockState[7] = activeIdx;
         setOnChainState(mockState);
+
+        // Compute remaining balance from non-released milestones
+        const remaining = (projData.milestones || [])
+          .filter((m: any) => !['released', 'complete'].includes(m.status?.toLowerCase()))
+          .reduce((sum: number, m: any) => sum + (parseFloat(m.amount_eth) || 0), 0);
+        setEscrowBalance(BigInt(Math.round(remaining * 1e18)));
       }
 
     } catch (err) {
