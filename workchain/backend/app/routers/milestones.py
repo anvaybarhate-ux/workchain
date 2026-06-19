@@ -18,6 +18,35 @@ def get_milestone_detail(milestone_id: UUID, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Milestone not found")
     return milestone
 
+@router.patch("/{milestone_id}/status", response_model=MilestoneResponse)
+def reset_milestone_status(
+    milestone_id: UUID,
+    body: dict,
+    db: Session = Depends(get_db)
+):
+    """
+    Admin/recovery endpoint: directly set milestone status.
+    Used by recovery scripts to sync DB state with on-chain state.
+    Body: { "status": "pending" | "active" | "submitted" | "released" | "disputed" }
+    """
+    milestone = db.query(Milestone).filter(Milestone.id == milestone_id).first()
+    if not milestone:
+        raise HTTPException(status_code=404, detail="Milestone not found")
+    status_str = body.get("status", "").lower()
+    status_map = {
+        "pending":  MilestoneStatus.PENDING,
+        "active":   MilestoneStatus.ACTIVE,
+        "submitted": MilestoneStatus.SUBMITTED,
+        "released": MilestoneStatus.RELEASED,
+        "disputed": MilestoneStatus.DISPUTED,
+    }
+    if status_str not in status_map:
+        raise HTTPException(status_code=400, detail=f"Invalid status: {status_str}")
+    milestone.status = status_map[status_str]
+    db.commit()
+    db.refresh(milestone)
+    return milestone
+
 @router.post("/{milestone_id}/submit", response_model=MilestoneResponse)
 def submit_milestone(
     milestone_id: UUID,
