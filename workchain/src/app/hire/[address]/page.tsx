@@ -68,7 +68,7 @@ export default function HirePage() {
             <h2 className="text-5xl font-black uppercase text-distressed mb-6 text-[#1A1A1A]">CONTRACT_DEPLOYED.</h2>
             <div className="font-mono text-2xl font-black text-[#C5A945] mb-4">PROJECT ID: WC-0047</div>
             <div className="font-mono text-sm font-bold text-[#1A1A1A] mb-12 flex justify-center items-center gap-2">
-              TX HASH: <span className="text-xs">0x1a2b...9z0a</span> <a href="#" className="text-[#DC143C] hover:underline ml-2">VIEW ON ETHERSCAN ↗</a>
+              TX HASH: <span className="text-xs">0x1a2b...9z0a</span> <a href="https://sepolia.etherscan.io" target="_blank" rel="noopener noreferrer" className="text-[#DC143C] hover:underline ml-2">VIEW ON ETHERSCAN ↗</a>
             </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
