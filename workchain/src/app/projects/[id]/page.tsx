@@ -507,7 +507,8 @@ export default function ProjectDetail() {
       setApproveError("SIGNER_MISSING: Disconnect and reconnect your MetaMask wallet.");
       return;
     }
-    if (!project?.contract_address) {
+    // Only require contract_address for real (non-mock) projects
+    if (!isMock && !project?.contract_address) {
       setApproveError("CONTRACT_NOT_FOUND: No escrow contract address for this project.");
       return;
     }
