@@ -25,6 +25,7 @@ export const ESCROW_ABI = ESCROW_JSON.abi
 export const REPUTATION_ABI = REPUTATION_JSON.abi
 
 export function getReadProvider() {
+  console.log("RPC_URL check:", process.env.NEXT_PUBLIC_RPC_URL);
   return new ethers.JsonRpcProvider(
     RPC_URL
   )
