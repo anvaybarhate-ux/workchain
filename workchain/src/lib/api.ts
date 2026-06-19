@@ -131,11 +131,16 @@ export const submitMilestone = (
 
 export const approveMilestone = (
   id: string,
-  walletAddress: string
-) => apiFetch<any>(
-  `/api/milestones/${id}/approve?wallet_address=${walletAddress}`, {
-  method: "POST"
-})
+  walletAddress: string,
+  txHash?: string
+) => {
+  const q = txHash 
+    ? `?wallet_address=${walletAddress}&tx_hash=${txHash}` 
+    : `?wallet_address=${walletAddress}`
+  return apiFetch<any>(`/api/milestones/${id}/approve${q}`, {
+    method: "POST"
+  })
+}
 
 export const rejectMilestone = (
   id: string,

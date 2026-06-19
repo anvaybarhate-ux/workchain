@@ -535,10 +535,14 @@ export default function ProjectDetail() {
         setTxStatus('BROADCASTING');
         setApproveTxHash(tx.hash);
         await tx.wait();
+        
+        // STAGE 4 — Update backend DB only after on-chain success
+        await approveMilestone(milestoneId, address!, tx.hash);
+      } else {
+        // Mock mode fallback
+        const mockTxHash = "0x" + Array.from({length: 64}, () => Math.floor(Math.random()*16).toString(16)).join("");
+        await approveMilestone(milestoneId, address!, mockTxHash);
       }
-
-      // STAGE 4 — Update backend DB only after on-chain success
-      await approveMilestone(milestoneId, address!);
 
       // STAGE 5 — Success
       setTxStatus('SUCCESS');

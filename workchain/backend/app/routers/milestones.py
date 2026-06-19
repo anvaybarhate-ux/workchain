@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from uuid import UUID
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -87,6 +88,7 @@ def submit_milestone(
 def approve_milestone(
     milestone_id: UUID,
     wallet_address: str = Query(..., description="Wallet address of the client approving"),
+    tx_hash: Optional[str] = Query(None, description="Optional transaction hash for immediate indexer bypassing"),
     db: Session = Depends(get_db)
 ):
     """
@@ -109,6 +111,8 @@ def approve_milestone(
         
     milestone.status = MilestoneStatus.RELEASED
     milestone.approved_at = datetime.now(timezone.utc)
+    if tx_hash:
+        milestone.tx_hash_release = tx_hash
     
     # Activate next milestone, if any
     all_milestones = sorted(project.milestones, key=lambda m: m.milestone_index)
@@ -121,6 +125,24 @@ def approve_milestone(
         next_milestone = all_milestones[current_idx + 1]
         next_milestone.status = MilestoneStatus.ACTIVE
         
+    # If tx_hash is provided, write a confirmed transaction immediately to populate earnings UI
+    if tx_hash:
+        from app.models.transaction import Transaction, TransactionType, TransactionStatus
+        # Check if transaction already exists
+        existing_tx = db.query(Transaction).filter(Transaction.tx_hash.ilike(tx_hash)).first()
+        if not existing_tx:
+            tx_record = Transaction(
+                tx_hash=tx_hash,
+                project_id=project.id,
+                milestone_id=milestone.id,
+                type=TransactionType.RELEASE,
+                from_address=project.contract_address or checksum_wallet,
+                to_address=project.freelancer.wallet_address,
+                amount_eth=milestone.amount_eth,
+                status=TransactionStatus.CONFIRMED
+            )
+            db.add(tx_record)
+
     db.commit()
     db.refresh(milestone)
     
