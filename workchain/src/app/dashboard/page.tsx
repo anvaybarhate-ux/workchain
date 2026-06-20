@@ -47,6 +47,8 @@ export default function DashboardPage() {
     router.push('/connect');
   };
 
+  const [totalEarnedEth, setTotalEarnedEth] = useState<number>(0);
+
   const fetchData = async () => {
     if (!address) return;
     setIsLoading(true);
@@ -65,13 +67,19 @@ export default function DashboardPage() {
         setReputation(null);
       }
 
-      // 3. Fetch Activity
+      // 3. Fetch Activity and Releases
       try {
         const txs = await getTransactions({ wallet: address });
         setActivity(txs.slice(0, 5));
+        
+        // Sum ALL release transactions for this wallet to compute total earned
+        const releases = txs.filter((tx: any) => tx.type === "release");
+        const sumReleases = releases.reduce((sum: number, tx: any) => sum + parseFloat(tx.amount_eth || 0), 0);
+        setTotalEarnedEth(sumReleases);
       } catch (err) {
         console.warn("Error fetching transactions:", err);
         setActivity([]);
+        setTotalEarnedEth(0);
       }
 
       // 4. Fetch on-chain escrow contract data for each project asynchronously
@@ -139,9 +147,6 @@ export default function DashboardPage() {
 
   // Dynamic Metrics Calculations
   // Sum amount_eth from transactions where type === "release"
-  const totalEarnedEth = activity
-    .filter((tx: any) => tx.type === "release")
-    .reduce((sum: number, tx: any) => sum + parseFloat(tx.amount_eth || 0), 0);
   const totalEarnedWei = BigInt(Math.round(totalEarnedEth * 1e18));
   const totalEarnedFormatted = isLoading ? "—" : formatEth(totalEarnedWei);
 

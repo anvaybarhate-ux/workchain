@@ -1051,18 +1051,56 @@ export default function ProjectDetail() {
                               )}
                             </form>
                           ) : activeMilestone.status === 2 ? ( // Submitted
-                            <div className="bg-[#1A1A1A] text-[#F0EAD6] p-6 border-4 border-[#C5A945] text-center font-mono">
-                              <h4 className="text-xl font-black text-[#C5A945] mb-2 uppercase animate-flicker">AWAITING CLIENT APPROVAL</h4>
-                              <p className="text-xs opacity-60 mb-4">DELIVERABLES SUBMITTED SUCCESSFULLY ON-CHAIN.</p>
-                              {activeMilestone.ipfsHash && (
-                                <a 
-                                  href={`https://ipfs.io/ipfs/${activeMilestone.ipfsHash}`} 
-                                  target="_blank" 
-                                  rel="noopener noreferrer" 
-                                  className="underline text-sm font-bold text-white block hover:text-[#C5A945]"
+                            <div className="flex flex-col gap-6 w-full">
+                              <div className="bg-[#1A1A1A] text-[#F0EAD6] p-6 border-4 border-[#C5A945] text-center font-mono">
+                                <h4 className="text-xl font-black text-[#C5A945] mb-2 uppercase animate-flicker">AWAITING CLIENT APPROVAL</h4>
+                                <p className="text-xs opacity-60 mb-4">DELIVERABLES SUBMITTED SUCCESSFULLY ON-CHAIN.</p>
+                                {activeMilestone.ipfsHash && (
+                                  <a 
+                                    href={`https://ipfs.io/ipfs/${activeMilestone.ipfsHash}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="underline text-sm font-bold text-white block hover:text-[#C5A945]"
+                                  >
+                                    VIEW SUBMITTED PROOF GATEWAY ↗
+                                  </a>
+                                )}
+                              </div>
+                              <div className="text-center w-full">
+                                <button 
+                                  onClick={() => {
+                                    setShowDisputeForm(!showDisputeForm);
+                                    setShowRejectForm(false);
+                                  }}
+                                  className="font-mono text-xs uppercase text-[#DC143C] font-black underline underline-offset-4 cursor-pointer"
                                 >
-                                  VIEW SUBMITTED PROOF GATEWAY ↗
-                                </a>
+                                  ⚖ RAISE DISPUTE
+                                </button>
+                              </div>
+
+                              {/* DISPUTE EVIDENCE FORM */}
+                              {showDisputeForm && (
+                                <form onSubmit={handleClientDispute} className="bg-white border-4 border-[#EC4899] p-6 mt-6">
+                                  <h5 className="font-black text-sm uppercase text-[#EC4899] mb-3">Escalate to On-chain Dispute</h5>
+                                  <textarea 
+                                    placeholder="State your dispute reasons..."
+                                    value={disputeStatement}
+                                    onChange={(e) => setDisputeStatement(e.target.value)}
+                                    required
+                                    className="w-full bg-white border-2 border-[#1A1A1A] p-3 font-mono text-xs font-bold uppercase h-24 mb-4 focus:outline-none"
+                                  ></textarea>
+                                  <div className="mb-4">
+                                    <span className="font-mono text-xs font-bold block mb-1">UPLOAD DISPUTE EVIDENCE FILE:</span>
+                                    <input 
+                                      type="file" 
+                                      onChange={(e) => setDisputeFile(e.target.files?.[0] || null)}
+                                      className="font-mono text-xs font-bold"
+                                    />
+                                  </div>
+                                  <button type="submit" className="bg-[#EC4899] text-white px-4 py-2 font-black text-xs uppercase border-2 border-black">
+                                    CONFIRM & LAUNCH DISPUTE
+                                  </button>
+                                </form>
                               )}
                             </div>
                           ) : (

@@ -63,7 +63,7 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
 
   const isCorrectNetwork = chainId === SEPOLIA_CHAIN_ID;
-  const shortAddress = address 
+  const shortAddress = address
     ? `${address.slice(0, 6)}...${address.slice(-4)}`
     : null;
 
