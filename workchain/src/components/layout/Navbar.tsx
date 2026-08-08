@@ -54,8 +54,6 @@ export function Navbar() {
       
       <div className="flex space-x-6 items-center">
         <div className="hidden lg:flex space-x-6 font-black uppercase text-sm">
-          <Link href="/hire/0x8f9a3C42B1d71ef2Ca90001aa42b000000000000" className="hover:text-[#DC143C] transition-all">HIRE</Link>
-          <Link href="/explore" className="hover:text-[#DC143C] transition-all">WORK</Link>
           <Link href="/features" className="hover:text-[#DC143C] transition-all">ESCROW</Link>
         </div>
         

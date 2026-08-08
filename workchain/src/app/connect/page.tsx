@@ -80,9 +80,8 @@ export default function ConnectPage() {
     );
   }
 
-  const handleRoleSelect = async (roleVal: 'freelancer' | 'client') => {
+  const handleRoleSelect = (roleVal: 'freelancer' | 'client') => {
     setSelectedRole(roleVal);
-    await changeRole(roleVal);
   };
 
   const handleInitialize = async () => {

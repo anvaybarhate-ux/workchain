@@ -1,10 +1,26 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import ProtocolStats from '@/components/ProtocolStats';
+import { useWallet } from '@/context/WalletContext';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const { isConnected, isInitializing } = useWallet();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isInitializing && isConnected) {
+      const storedRole = localStorage.getItem("workchain_role");
+      if (storedRole) {
+        router.push('/dashboard');
+      } else {
+        router.push('/connect');
+      }
+    }
+  }, [isConnected, isInitializing, router]);
+
   return (
     <>
       {/* Hero Section */}

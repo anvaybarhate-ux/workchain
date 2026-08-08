@@ -207,7 +207,30 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
       setRole(storedRole);
     }
 
-    setIsInitializing(false);
+    const initWallet = async () => {
+      if (typeof window !== "undefined" && window.ethereum) {
+        try {
+          const provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.send("eth_accounts", []);
+          if (accounts.length > 0) {
+            const bal = await provider.getBalance(accounts[0]);
+            const newSigner = await provider.getSigner();
+            const network = await provider.getNetwork();
+            setSigner(newSigner);
+            setAddress(accounts[0]);
+            setBalance(ethers.formatEther(bal).slice(0, 6));
+            setChainId(Number(network.chainId));
+            setIsConnected(true);
+            localStorage.setItem("workchain_address", accounts[0]);
+          }
+        } catch (err) {
+          console.error("Auto-connect failed", err);
+        }
+      }
+      setIsInitializing(false);
+    };
+
+    initWallet();
   }, []);
 
   // Event Listeners
