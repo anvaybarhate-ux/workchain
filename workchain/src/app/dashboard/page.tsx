@@ -56,7 +56,8 @@ export default function DashboardPage() {
     try {
       // 1. Fetch Projects
       const projs = await getProjects(address);
-      setProjects(projs);
+      const safeProjs = Array.isArray(projs) ? projs : [];
+      setProjects(safeProjs);
 
       // 2. Fetch Reputation
       try {
@@ -70,10 +71,11 @@ export default function DashboardPage() {
       // 3. Fetch Activity and Releases
       try {
         const txs = await getTransactions({ wallet: address });
-        setActivity(txs.slice(0, 5));
+        const validTxs = Array.isArray(txs) ? txs : [];
+        setActivity(validTxs.slice(0, 5));
         
         // Sum ALL release transactions for this wallet to compute total earned
-        const releases = txs.filter((tx: any) => tx.type === "release");
+        const releases = validTxs.filter((tx: any) => tx.type === "release");
         const sumReleases = releases.reduce((sum: number, tx: any) => sum + parseFloat(tx.amount_eth || 0), 0);
         setTotalEarnedEth(sumReleases);
       } catch (err) {
@@ -83,7 +85,7 @@ export default function DashboardPage() {
       }
 
       // 4. Fetch on-chain escrow contract data for each project asynchronously
-      projs.forEach(async (project: any) => {
+      safeProjs.forEach(async (project: any) => {
         if (project.contract_address) {
           try {
             const provider = getReadProvider();
@@ -157,8 +159,8 @@ export default function DashboardPage() {
   const disputeRateFormatted = reputation ? `${parseFloat(reputation.dispute_rate || 0).toFixed(1)}%` : "0.0%";
 
   // Reputation Metric
-  const reputationScoreFormatted = reputation ? `${reputation.score}/100` : "—/100";
-  const reputationTierFormatted = reputation ? reputation.tier.toUpperCase() : "NO TIER";
+  const reputationScoreFormatted = reputation ? `${reputation.score || 50}/100` : "—/100";
+  const reputationTierFormatted = reputation ? (reputation.tier?.toUpperCase() || "NO TIER") : "NO TIER";
   const reputationNftFormatted = reputation?.nft_token_id ? `NFT #${reputation.nft_token_id}` : "NO NFT YET";
 
   // Client calculations for role switching view
