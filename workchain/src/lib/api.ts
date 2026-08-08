@@ -6,34 +6,46 @@ async function apiFetch<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  const res = await fetch(
-    BASE + path, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers
-    },
-    ...options
-  })
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    let msg = `HTTP ${res.status}`;
-    if (err.detail) {
-      if (typeof err.detail === "string") {
-        msg = err.detail;
-      } else if (Array.isArray(err.detail)) {
-        msg = err.detail.map((d: any) => {
-          if (d && typeof d === "object") {
-            return `${d.loc?.join(".") || "error"}: ${d.msg || JSON.stringify(d)}`;
-          }
-          return String(d);
-        }).join(", ");
-      } else if (typeof err.detail === "object") {
-        msg = err.detail.message || JSON.stringify(err.detail);
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(
+      BASE + path, {
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers
+      },
+      signal: controller.signal,
+      ...options
+    });
+    clearTimeout(id);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}))
+      let msg = `HTTP ${res.status}`;
+      if (err.detail) {
+        if (typeof err.detail === "string") {
+          msg = err.detail;
+        } else if (Array.isArray(err.detail)) {
+          msg = err.detail.map((d: any) => {
+            if (d && typeof d === "object") {
+              return `${d.loc?.join(".") || "error"}: ${d.msg || JSON.stringify(d)}`;
+            }
+            return String(d);
+          }).join(", ");
+        } else if (typeof err.detail === "object") {
+          msg = err.detail.message || JSON.stringify(err.detail);
+        }
       }
+      throw new Error(msg);
     }
-    throw new Error(msg);
+    return res.json()
+  } catch (err: any) {
+    clearTimeout(id);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out after 10 seconds. Backend might be unresponsive.');
+    }
+    throw err;
   }
-  return res.json()
 }
 
 // ── USERS ──────────────────────────
