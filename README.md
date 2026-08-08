@@ -77,9 +77,6 @@ This project is a work in progress and currently deployed and tested on the **Se
 
 This project is currently for testing and educational purposes only. It has not been audited, and no real funds should be used with it.
 
-## License
-
-Specify your license here (e.g. MIT).
 
 ## Contact
 
